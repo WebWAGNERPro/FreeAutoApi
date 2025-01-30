@@ -14,22 +14,40 @@ namespace FreeAutoApi.Controllers
         [HttpGet]
         public ActionResult<DataTable> Index()
         {
-            DataTable messages = HelloManager.GetHelloMessages();
-            return Ok(messages);
+            try
+            {
+                DataTable messages = HelloManager.GetHelloMessages();
+                if (messages.Rows.Count == 0)
+                {
+                    return NoContent();
+                }
+                return Ok(messages);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { message = "Une erreur est survenue", details = ex.Message });
+            }
         }
 
         // Route: /api/hello/photos
         [HttpGet("photos")]
         public async Task<ActionResult<List<string>>> Photos()
         {
-            var photos = await Task.FromResult(new List<string>
+            try
             {
-                "photo1.jpg",
-                "photo2.jpg",
-                "photo3.jpg"
-            });
+                var photos = await Task.FromResult(new List<string>
+                {
+                    "photo1.jpg",
+                    "photo2.jpg",
+                    "photo3.jpg"
+                });
 
-            return Ok(photos);
+                return Ok(photos);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, new { message = "Une erreur est survenue", details = ex.Message });
+            }
         }
     }
 }
