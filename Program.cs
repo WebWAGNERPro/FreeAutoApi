@@ -9,10 +9,15 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    // Configuration de Swagger, comme définir les informations de l'API
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
         Title = "FreeAutoApi",
@@ -20,8 +25,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// ✅ Enregistrer Common et HelloManager
-builder.Services.AddSingleton<Common>();
+// ✅ Enregistrer HelloManager
 builder.Services.AddScoped<HelloManager>();
 
 var app = builder.Build();

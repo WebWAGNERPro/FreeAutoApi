@@ -2,6 +2,7 @@ using FreeAutoApi.Facades;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Data;
 
 namespace FreeAutoApi.Controllers
 {
@@ -9,18 +10,26 @@ namespace FreeAutoApi.Controllers
     [ApiController]
     public class HelloController : ControllerBase
     {
-        private readonly HelloManager _helloManager;
-
-        public HelloController(HelloManager helloManager)
+        // Route: /api/hello
+        [HttpGet]
+        public ActionResult<DataTable> Index()
         {
-            _helloManager = helloManager;
+            DataTable messages = HelloManager.GetHelloMessages();
+            return Ok(messages);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<string>>> Get()
+        // Route: /api/hello/photos
+        [HttpGet("photos")]
+        public async Task<ActionResult<List<string>>> Photos()
         {
-            var messages = await _helloManager.GetHelloMessagesAsync();
-            return Ok(messages);
+            var photos = await Task.FromResult(new List<string>
+            {
+                "photo1.jpg",
+                "photo2.jpg",
+                "photo3.jpg"
+            });
+
+            return Ok(photos);
         }
     }
 }
